@@ -20,7 +20,7 @@ with st.sidebar:
     st.caption("A interface salva sua execução em resultados_interface/.")
 destino = RAIZ / "resultados_interface"
 if rodar:
-    with st.spinner("Gerando dados, análises e relatório…"):
+    with st.spinner("Gerando dados e análises…"):
         executar(Config(semente=int(semente), repeticoes=int(repeticoes), sigma_ms=float(sigma)), destino)
     st.success("Experimento concluído.")
 if not (destino / "resumo.json").exists():
@@ -56,4 +56,6 @@ with abas[2]:
 with abas[3]:
     st.dataframe(pd.read_csv(destino / "dados_simulados.csv"), hide_index=True)
     st.download_button("Baixar dados CSV", (destino / "dados_simulados.csv").read_bytes(), "dados_simulados.csv", "text/csv")
-    st.download_button("Baixar relatório PDF", (destino / "relatorio.pdf").read_bytes(), "relatorio.pdf", "application/pdf")
+    relatorio = RAIZ / "resultados" / "relatorio.pdf"
+    if relatorio.exists():
+        st.download_button("Baixar relatório do trabalho", relatorio.read_bytes(), "relatorio.pdf", "application/pdf")

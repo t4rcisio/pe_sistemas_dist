@@ -44,5 +44,5 @@ def coletar():
         "processadores_logicos": os.cpu_count(),
         "memoria_fisica_gib": memoria_gib,
         "bibliotecas": {pacote: version(pacote) for pacote in
-                        ["numpy", "pandas", "scipy", "statsmodels", "matplotlib", "reportlab"]},
+                        ["numpy", "pandas", "scipy", "statsmodels", "matplotlib"]},
     }

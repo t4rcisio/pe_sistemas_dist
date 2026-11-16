@@ -1,6 +1,6 @@
 # Projeto 5 - Planejamento de experimentos em Python
 
-Implementação local do Projeto 5 do manual da disciplina. Inclui simulação, regressão, ANOVA, diagnósticos, gráficos, relatório PDF e interface opcional. Não exige conta de nuvem nem conexão de rede após instalar as bibliotecas.
+Implementação local do Projeto 5 do manual da disciplina. Inclui simulação, regressão, ANOVA, diagnósticos, gráficos e interface opcional. O relatório PDF está incluído como resultado final. Não exige conta de nuvem nem conexão de rede após instalar as bibliotecas.
 
 Código: [t4rcisio/pe_sistemas_dist](https://github.com/t4rcisio/pe_sistemas_dist). O relatório usa apresentação acadêmica em preto e branco, com cabeçalho do CEFET-MG. A discussão cita os trabalhos LDB, de Cho et al. (2024), e Autothrottle, de Wang et al. (2024). A metodologia também cita o manual estatístico NIST/SEMATECH.
 
@@ -22,7 +22,7 @@ Não é necessário ativar o ambiente virtual. Se você já instalou as dependê
 .\.venv\Scripts\python.exe -m streamlit run app.py
 ```
 
-Abra o endereço local informado pelo Streamlit. A interface permite alterar semente, repetições e ruído, explorar resultados e baixar CSV/PDF. Cada nova execução da interface substitui `resultados_interface/`. A execução de linha de comando usa `resultados/` por padrão. Os arquivos originais do trabalho são preservados.
+Abra o endereço local informado pelo Streamlit. A interface permite alterar semente, repetições e ruído, explorar resultados e baixar o CSV. O download do PDF corresponde ao relatório final incluído no repositório. Cada nova execução da interface substitui `resultados_interface/`. A execução de linha de comando usa `resultados/` por padrão. Os arquivos originais do trabalho são preservados.
 
 ## Linha de comando
 
@@ -68,7 +68,7 @@ Na execução padrão, X1:X4 tem p≈0,045 apesar de efeito populacional nulo: �
 | `tabelas/ranking.csv` | 32 configurações/regiões e intervalos |
 | `tabelas/resumo_tratamentos.csv` | Estatísticas das réplicas |
 | `graficos/` | Quatro figuras PNG |
-| `relatorio.pdf` | Relatório técnico com resultados da execução |
+| `relatorio.pdf` | Relatório final incluído; não é recriado pelos scripts |
 | `modelo.txt`, `resumo.json` | Resumo OLS e indicadores principais |
 | `configuracao_utilizada.json`, `ambiente.json` | Parâmetros, sistema, processador, RAM e versões para reprodução |
 
@@ -78,8 +78,8 @@ Os CSVs usam vírgula como delimitador e ponto decimal, com UTF-8 BOM para facil
 
 O trabalho é inteiramente local e se encerra na análise simulada. AWS aparece como exemplo de aplicação e como origem dos nomes das regiões adotados no enunciado; não há implantação prevista nem comparação entre provedores. O throughput não é calculado porque o manual não define uma equação para essa resposta.
 
-O relatório é produzido pelo script com os resultados da execução e descreve o ambiente usado. Os testes verificam balanceamento, reprodução, recuperação exata dos parâmetros sem ruído, interação, ótimo teórico, comparação dos blocos, intervalos e rejeição de bases inválidas.
+O relatório final descreve o ambiente usado. Os testes verificam balanceamento, reprodução, recuperação exata dos parâmetros sem ruído, interação, ótimo teórico, comparação dos blocos, intervalos e rejeição de bases inválidas.
 
 ## Organização do código
 
-`doe/simulacao.py` contém a geração; `doe/analise.py`, o ajuste e gráficos; `doe/relatorio.py`, o PDF. `executar.py` coordena as etapas e `app.py` fornece a interface. Todos os cálculos são executados no seu computador.
+`doe/simulacao.py` contém a geração; `doe/analise.py`, o ajuste e gráficos; `doe/ambiente.py`, os metadados da execução. `executar.py` coordena as etapas e `app.py` fornece a interface. Todos os cálculos são executados no seu computador. O repositório não inclui scripts de geração do relatório PDF.
