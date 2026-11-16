@@ -32,6 +32,7 @@ def gerar_relatorio(destino, config):
     ler = lambda nome: pd.read_csv(destino / "tabelas" / f"{nome}.csv")
     coef, anova, blocos, testes, ranking = map(ler, ["coeficientes", "anova", "comparacao_blocos", "diagnosticos", "ranking"])
     resumo = json.loads((destino / "resumo.json").read_text(encoding="utf-8"))
+    ambiente = json.loads((destino / "ambiente.json").read_text(encoding="utf-8"))
     normal, negrito = _fontes()
     estilos = {
         "texto": ParagraphStyle("texto", fontName=normal, fontSize=12, leading=18,
@@ -74,8 +75,7 @@ def gerar_relatorio(destino, config):
             ("LINEBELOW", (0, 0), (-1, 0), .5, colors.black),
             ("LINEBELOW", (0, -1), (-1, -1), .7, colors.black),
         ]))
-        elementos.append(KeepTogether([Paragraph(titulo, estilos["rotulo"]), t,
-                                       Paragraph("Fonte: elaboração própria (2026).", estilos["fonte"])]))
+        elementos.append(KeepTogether([Paragraph(titulo, estilos["rotulo"]), t, Spacer(1, 9)]))
 
     def figura(nome, titulo, largura=16*cm):
         img = Image(str(destino / "graficos" / nome))
@@ -94,12 +94,25 @@ def gerar_relatorio(destino, config):
       "e processamento. Este trabalho usa uma simulação para comparar essas configurações e identificar "
       "quais reduzem a latência P99. Essa medida indica o tempo que não é ultrapassado por 99% das "
       "requisições de um conjunto.")
+    p("Cho et al. (2024) investigam atrasos em aplicações com várias threads e mostram como "
+      "a disputa entre elas pode afetar as respostas mais lentas. O estudo reforça a importância "
+      "de acompanhar a latência de cauda, além do tempo médio de resposta.")
     p(f"O objetivo é encontrar uma configuração com latência inferior a {numero(config.meta_ms, 0)} ms. "
       "O estudo segue o Projeto 5 do manual da disciplina e dá atenção à relação entre o número "
       "de conexões com o banco e o número de workers, que são as threads usadas no processamento.")
+    p("Uma loja virtual hospedada na Amazon Web Services (AWS), plataforma de computação em nuvem, "
+      "é um exemplo de aplicação desse problema. O enunciado usa os nomes us-east-1 e sa-east-1, "
+      "que identificam regiões da AWS na Virgínia e em São Paulo (Amazon Web Services, s.d.). "
+      "A menção a esse provedor segue os nomes adotados no exercício; o estudo não compara "
+      "empresas de nuvem e não prevê uma implantação. O experimento é inteiramente local e simulado.")
+
+    elementos.append(PageBreak())
     p("2 PLANEJAMENTO DO EXPERIMENTO", "secao")
     p("Foram comparados quatro fatores, cada um com dois níveis. A região foi tratada como bloco, "
       "para separar sua influência dos efeitos das configurações. Os níveis são apresentados na Tabela 1.")
+    p("O uso de blocos permite considerar uma fonte conhecida de variação na análise "
+      "(NIST/SEMATECH, s.d.). Neste estudo, cada região contém todas as configurações, "
+      "com o mesmo número de repetições.")
     tabela("Tabela 1 - Fatores e níveis do experimento", ["Fator", "Nível baixo (-1)", "Nível alto (+1)"], [
         ["X1: tempo do cache (TTL)", "15 segundos", "120 segundos"],
         ["X2: conexões com o banco", "20 conexões", "100 conexões"],
@@ -110,6 +123,22 @@ def gerar_relatorio(destino, config):
     p(f"As 16 combinações foram repetidas {config.repeticoes} vezes em cada região, totalizando "
       f"{resumo['n_observacoes']} observações. A ordem foi sorteada dentro de cada região. "
       f"A semente {config.semente} permite reproduzir os mesmos dados em uma nova execução.")
+    p("2.1 Ambiente de execução", "secao")
+    memoria = ambiente.get("memoria_fisica_gib")
+    hardware = escape(ambiente.get("processador", "não identificado"))
+    memoria_texto = f" e {numero(memoria)} GiB de memória RAM detectada" if memoria is not None else ""
+    p(f"O programa foi executado localmente em {escape(ambiente.get('sistema', ambiente['plataforma']))}, "
+      f"arquitetura {escape(ambiente.get('arquitetura', 'não registrada'))}, com processador {hardware}"
+      f"{memoria_texto}. A linguagem usada foi Python {escape(ambiente.get('versao_python', ambiente['python'].split()[0]))}.")
+    bibliotecas = ambiente["bibliotecas"]
+    p(f"NumPy {escape(bibliotecas['numpy'])} foi usado para gerar os números aleatórios; "
+      f"pandas {escape(bibliotecas['pandas'])}, para organizar os dados; "
+      f"statsmodels {escape(bibliotecas['statsmodels'])}, para ajustar o modelo e calcular a ANOVA; "
+      f"e SciPy {escape(bibliotecas['scipy'])}, para os testes estatísticos. "
+      f"Os gráficos foram produzidos com Matplotlib {escape(bibliotecas['matplotlib'])}, "
+      f"e o relatório, com ReportLab {escape(bibliotecas['reportlab'])}.")
+    p("Essas informações descrevem onde os cálculos foram realizados. O desempenho do computador "
+      "não é a resposta do experimento: os valores de latência são produzidos pela equação da simulação.")
 
     elementos.append(PageBreak())
     p("3 GERAÇÃO DOS DADOS", "secao")
@@ -118,7 +147,7 @@ def gerar_relatorio(destino, config):
     p("Y = 85 - 18 X1 - 12 X2 - 8 X3 + 14 X2 X3 + 15 Z + erro", "cabecalho")
     p(f"O erro foi sorteado de uma distribuição normal com média zero e desvio padrão de "
       f"{numero(config.sigma_ms)} ms. Cada observação representa uma medição simulada de P99. "
-      "As diferenças entre regiões foram definidas pela equação e não resultam de medições na AWS.")
+      "As diferenças entre regiões foram definidas pela equação, e não por medições de serviços reais.")
     p("4 COMPARAÇÃO ENTRE OS VALORES ESPERADOS E ESTIMADOS", "secao")
     p("A análise foi feita sem usar a coluna que guarda a resposta esperada. Depois, os valores "
       "estimados foram comparados aos da equação. A Tabela 2 apresenta os coeficientes, "
@@ -166,6 +195,10 @@ def gerar_relatorio(destino, config):
     p("O aumento do tempo de permanência no cache também reduziu a latência. Já a política "
       "de cache não altera a resposta esperada na equação. As pequenas diferenças entre políticas "
       "observadas nesta amostra são explicadas pela variação aleatória.")
+    p("Wang et al. (2024), no trabalho sobre o sistema Autothrottle, relacionam o uso de CPU "
+      "dos microsserviços com a latência da aplicação. Essa abordagem reforça o interesse de "
+      "examinar os recursos em conjunto. Neste trabalho, essa relação é representada pela "
+      "interação entre conexões e workers definida na equação do exercício.")
 
     elementos.append(PageBreak())
     p("7 VERIFICAÇÃO DOS RESULTADOS", "secao")
@@ -208,16 +241,36 @@ def gerar_relatorio(destino, config):
       "regiões também precisa ser considerada na análise.")
     p("Os resultados valem para a simulação. Uma média abaixo da meta não garante que toda "
       "medição futura ficará abaixo dela. A aplicação em um sistema real exige uma nova coleta. "
-      "A etapa com AWS Lambda não foi executada, e o throughput não foi simulado porque o manual "
-      "não fornece uma equação para essa resposta.")
+      "O trabalho se encerra nessa análise simulada. O throughput não foi calculado porque "
+      "o manual não fornece uma equação para essa resposta.")
 
     elementos.append(PageBreak())
     p("REFERÊNCIAS", "titulo")
+    p('AMAZON WEB SERVICES. <b>AWS Regions</b>. [S. l.], [s. d.]. Disponível em: '
+      '<link href="https://docs.aws.amazon.com/global-infrastructure/latest/regions/aws-regions.html">'
+      'https://docs.aws.amazon.com/global-infrastructure/latest/regions/aws-regions.html</link>. '
+      'Acesso em: 16 nov. 2026.', "referencia")
+    p('CHO, Inho; PARK, Seo Jin; SAEED, Ahmed; ALIZADEH, Mohammad; BELAY, Adam. '
+      'LDB: an efficient latency profiling tool for multithreaded applications. '
+      'In: USENIX SYMPOSIUM ON NETWORKED SYSTEMS DESIGN AND IMPLEMENTATION, 21., 2024, Santa Clara. '
+      '<b>Proceedings [...]</b>. [S. l.]: USENIX Association, 2024. p. 1497-1510. Disponível em: '
+      '<link href="https://www.usenix.org/conference/nsdi24/presentation/cho">'
+      'https://www.usenix.org/conference/nsdi24/presentation/cho</link>. '
+      'Acesso em: 16 nov. 2026.', "referencia")
     p("MANUAL prático de ensino superior &amp; pós-graduação: planejamento e análise de experimentos "
       "(DoE). [S. l.: s. n.], [s. d.]. Material da disciplina. Arquivo: Manual_Projetos_Pesquisa_DoE.pdf.", "referencia")
-    p("PRATES, Tarcísio Batista. <b>Plano do trabalho final: planejamento de experimentos em sistemas "
-      "distribuídos</b>. [S. l.], 2026. Documento de planejamento do projeto. "
-      "Arquivo: plano_experimento_doe_lambda.md.", "referencia")
+    p('NIST/SEMATECH. Randomized block designs. In: <b>e-Handbook of Statistical Methods</b>. '
+      '[S. l.], [s. d.]. Seção 5.3.3.2. Disponível em: '
+      '<link href="https://www.itl.nist.gov/div898/handbook/pri/section3/pri332.htm">'
+      'https://www.itl.nist.gov/div898/handbook/pri/section3/pri332.htm</link>. '
+      'Acesso em: 16 nov. 2026.', "referencia")
+    p('WANG, Zibo; LI, Pinghe; LIANG, Chieh-Jan Mike; WU, Feng; YAN, Francis Y. '
+      'Autothrottle: a practical bi-level approach to resource management for SLO-targeted microservices. '
+      'In: USENIX SYMPOSIUM ON NETWORKED SYSTEMS DESIGN AND IMPLEMENTATION, 21., 2024, Santa Clara. '
+      '<b>Proceedings [...]</b>. [S. l.]: USENIX Association, 2024. p. 149-165. Disponível em: '
+      '<link href="https://www.usenix.org/conference/nsdi24/presentation/wang-zibo">'
+      'https://www.usenix.org/conference/nsdi24/presentation/wang-zibo</link>. '
+      'Acesso em: 16 nov. 2026.', "referencia")
 
     def pagina(canvas, doc):
         canvas.setFillColor(colors.black)

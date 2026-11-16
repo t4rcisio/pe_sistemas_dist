@@ -4,7 +4,7 @@ Dep. Variable:        latencia_p99_ms   R-squared:                       0.993
 Model:                            OLS   Adj. R-squared:                  0.992
 Method:                 Least Squares   F-statistic:                     1019.
 Date:                Mon, 16 Nov 2026   Prob (F-statistic):           2.01e-84
-Time:                        14:12:07   Log-Likelihood:                -230.88
+Time:                        14:33:09   Log-Likelihood:                -230.88
 No. Observations:                  96   AIC:                             485.8
 Df Residuals:                      84   BIC:                             516.5
 Df Model:                          11

@@ -1,16 +1,14 @@
 """Entrada de linha de comando. Ex.: python executar.py --saida resultados."""
 import argparse
-from importlib.metadata import version
 import json
 from pathlib import Path
-import platform
-import sys
 
 import pandas as pd
 
 from doe.simulacao import Config, gerar
 from doe.analise import analisar
 from doe.relatorio import gerar_relatorio
+from doe.ambiente import coletar
 
 RAIZ = Path(__file__).resolve().parent
 
@@ -29,15 +27,14 @@ def executar(config, destino, etapa="tudo", entrada=None):
         if not arquivo_dados.exists():
             raise ValueError(f"Base não encontrada: {arquivo_dados}. Execute primeiro a etapa gerar.")
         dados = pd.read_csv(arquivo_dados)
+    # O ambiente precisa estar salvo antes de compor o relatório desta execução.
+    ambiente = coletar()
+    (destino / "ambiente.json").write_text(json.dumps(ambiente, ensure_ascii=False, indent=2), encoding="utf-8")
     if etapa != "gerar":
         resumo = analisar(dados, config, destino)
         gerar_relatorio(destino, config)
     else:
         resumo = {"n_observacoes": len(dados)}
-    ambiente = {"python": sys.version, "plataforma": platform.platform(),
-                "bibliotecas": {pacote: version(pacote) for pacote in
-                                ["numpy", "pandas", "scipy", "statsmodels", "matplotlib", "reportlab"]}}
-    (destino / "ambiente.json").write_text(json.dumps(ambiente, ensure_ascii=False, indent=2), encoding="utf-8")
     return resumo
 
 

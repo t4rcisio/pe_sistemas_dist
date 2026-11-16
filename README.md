@@ -1,8 +1,8 @@
 # Projeto 5 - Planejamento de experimentos em Python
 
-Implementação local da **parte principal** de `plano_experimento_doe_lambda.md`, baseada no Projeto 5 do manual. Inclui simulação, regressão, ANOVA, diagnósticos, gráficos, relatório PDF e interface opcional. Não exige conta AWS nem conexão de rede após instalar as bibliotecas.
+Implementação local do Projeto 5 do manual da disciplina. Inclui simulação, regressão, ANOVA, diagnósticos, gráficos, relatório PDF e interface opcional. Não exige conta de nuvem nem conexão de rede após instalar as bibliotecas.
 
-Código: [t4rcisio/pe_sistemas_dist](https://github.com/t4rcisio/pe_sistemas_dist). O relatório usa apresentação acadêmica em preto e branco, com cabeçalho do CEFET-MG e explicações voltadas à leitura do trabalho. As fontes e decisões de formatação estão em [docs/criterios_editoriais.md](docs/criterios_editoriais.md).
+Código: [t4rcisio/pe_sistemas_dist](https://github.com/t4rcisio/pe_sistemas_dist). O relatório usa apresentação acadêmica em preto e branco, com cabeçalho do CEFET-MG. A discussão cita os trabalhos LDB, de Cho et al. (2024), e Autothrottle, de Wang et al. (2024). A metodologia também cita o manual estatístico NIST/SEMATECH.
 
 ## Instalação (Windows / PowerShell)
 
@@ -70,15 +70,15 @@ Na execução padrão, X1:X4 tem p≈0,045 apesar de efeito populacional nulo: �
 | `graficos/` | Quatro figuras PNG |
 | `relatorio.pdf` | Relatório técnico com resultados da execução |
 | `modelo.txt`, `resumo.json` | Resumo OLS e indicadores principais |
-| `configuracao_utilizada.json`, `ambiente.json` | Parâmetros e versões para reprodução |
+| `configuracao_utilizada.json`, `ambiente.json` | Parâmetros, sistema, processador, RAM e versões para reprodução |
 
 Os CSVs usam vírgula como delimitador e ponto decimal, com UTF-8 BOM para facilitar importação. No Excel em português, importe via Dados → De Texto/CSV e selecione o delimitador correto.
 
 ## Escopo e limitações
 
-A extensão real com Lambda descrita no plano permanece futura: não há provisionamento, credenciais, coleta real, estimativa de custo ou resultados de Lambda neste projeto local. O throughput não é inventado porque o manual não define uma equação para essa resposta; alinhe essa exigência com o professor. As duas pendências estão documentadas também no relatório.
+O trabalho é inteiramente local e se encerra na análise simulada. AWS aparece como exemplo de aplicação e como origem dos nomes das regiões adotados no enunciado; não há implantação prevista nem comparação entre provedores. O throughput não é calculado porque o manual não define uma equação para essa resposta.
 
-O relatório é gerado automaticamente com a autoria indicada no plano e deve ser revisado antes da entrega. Os testes verificam balanceamento, reprodução, recuperação exata dos parâmetros sem ruído, interação, ótimo teórico, comparação dos blocos, intervalos e rejeição de bases inválidas.
+O relatório é produzido pelo script com os resultados da execução e descreve o ambiente usado. Os testes verificam balanceamento, reprodução, recuperação exata dos parâmetros sem ruído, interação, ótimo teórico, comparação dos blocos, intervalos e rejeição de bases inválidas.
 
 ## Organização do código
 

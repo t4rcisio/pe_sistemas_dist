@@ -1,6 +1,12 @@
 {
   "python": "3.14.3 (tags/v3.14.3:323c59a, Feb  3 2026, 16:04:56) [MSC v.1944 64 bit (AMD64)]",
+  "versao_python": "3.14.3",
+  "sistema": "Windows 11",
   "plataforma": "Windows-11-10.0.26300-SP0",
+  "arquitetura": "AMD64",
+  "processador": "13th Gen Intel(R) Core(TM) i5-1340P",
+  "processadores_logicos": 16,
+  "memoria_fisica_gib": 15.69,
   "bibliotecas": {
     "numpy": "2.4.6",
     "pandas": "2.3.3",
