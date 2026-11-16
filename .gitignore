@@ -1,0 +1,7 @@
+.venv/
+__pycache__/
+*.pyc
+.streamlit/secrets.toml
+tmp/
+resultados_interface/
+Manual_Projetos_Pesquisa_DoE.pdf

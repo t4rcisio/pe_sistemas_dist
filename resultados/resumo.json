@@ -1,0 +1,10 @@
+{
+  "n_observacoes": 96,
+  "formula": "latencia_p99_ms ~ Z + X1 + X2 + X3 + X4 + X1:X2 + X1:X3 + X1:X4 + X2:X3 + X2:X4 + X3:X4",
+  "alfa": 0.05,
+  "reducao_sq_residual_pct": 97.0818479120212,
+  "diferenca_regional_ms": 30.92308633804148,
+  "efeito_workers_pool_baixo_ms": -42.81662886791908,
+  "efeito_workers_pool_alto_ms": 11.666247939122162,
+  "observacoes_influentes": 7
+}

@@ -1,0 +1,4 @@
+﻿teste,estatistica,p_valor,agrupamento
+Shapiro-Wilk,0.996438627286798,0.997320210045559,resíduos do modelo com bloco
+Levene (Brown-Forsythe),0.4830767933157483,0.9857028273832216,32 células: região x X1 x X2 x X3 x X4; n=3
+Falta de ajuste,0.7317419116465321,0.7790061072461799,erro puro: 64 gl; falta de ajuste: 20 gl
